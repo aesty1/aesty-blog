@@ -18,4 +18,6 @@ public class PostDto {
     private String content;
     private List<String> tags;
     private LocalDateTime createdAt;
+    private Long authorId;
+    private List<CommentDto> commentDtos = new ArrayList<>();
 }
