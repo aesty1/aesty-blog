@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в систему | Блог</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: #334155;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+        }
+
+        /* Header */
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #1e40af;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .logo:hover {
+            color: #3b82f6;
+        }
+
+        .tagline {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        /* Login Card */
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(30, 64, 175, 0.12);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            padding: 2.5rem;
+        }
+
+        .card-header {
+            margin-bottom: 2rem;
+        }
+
+        .card-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-subtitle {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 0.25rem;
+            font-size: 1.1rem;
+        }
+
+        .toggle-password:hover {
+            color: #3b82f6;
+        }
+
+        /* Remember Me & Forgot Password */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #cbd5e1;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .checkbox.checked {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        .checkbox.checked::after {
+            content: "✓";
+            color: white;
+            font-size: 12px;
+        }
+
+        .checkbox-text {
+            font-size: 0.9rem;
+            color: #475569;
+            user-select: none;
+        }
+
+        .forgot-password {
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .forgot-password:hover {
+            color: #1e40af;
+            text-decoration: underline;
+        }
+
+        /* Login Button */
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(30, 64, 175, 0.25);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.2);
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .login-btn:hover::before {
+            left: 100%;
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .divider span {
+            padding: 0 1rem;
+        }
+
+        /* Social Login */
+        .social-login {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-btn {
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .social-btn:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+
+        .social-btn.google {
+            color: #475569;
+        }
+
+        .social-btn.github {
+            color: #475569;
+        }
+
+        /* Register Link */
+        .register-section {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .register-text {
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        .register-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            background: transparent;
+            color: #1e40af;
+            border: 2px solid #3b82f6;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .register-btn:hover {
+            background: rgba(59, 130, 246, 0.1);
+            transform: translateY(-1px);
+        }
+
+        /* Error Messages */
+        .error-message {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid #fecaca;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .error-message::before {
+            content: "⚠️";
+            font-size: 1.2rem;
+        }
+
+        .input-error {
+            border-color: #dc2626 !important;
+            background-color: #fef2f2;
+        }
+
+        .error-text {
+            color: #dc2626;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Footer */
+        .login-footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: #64748b;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .social-login {
+                grid-template-columns: 1fr;
+            }
+
+            .form-options {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Success Message */
+        .success-message {
+            background: #f0fdf4;
+            color: #059669;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid #a7f3d0;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .success-message::before {
+            content: "✅";
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <!-- Header -->
+    <div class="login-header">
+        <a href="/" class="logo">
+            <span class="logo-icon">✍️</span>
+            <span>ThoughtFlow</span>
+        </a>
+        <p class="tagline">Платформа для обмена мыслями и идеями</p>
+    </div>
+
+    <!-- Login Card -->
+    <div class="login-card">
+        <div class="card-header">
+            <h2 class="card-title">Добро пожаловать</h2>
+            <p class="card-subtitle">Войдите в свой аккаунт, чтобы продолжить</p>
+        </div>
+
+        <!-- Error Message -->
+        <div class="error-message" th:if="${param.error}">
+            Неверный email или пароль. Пожалуйста, попробуйте снова.
+        </div>
+
+        <!-- Success Message (for logout) -->
+        <div class="success-message" th:if="${param.logout}">
+            Вы успешно вышли из системы.
+        </div>
+
+        <!-- Login Form -->
+        <form th:action="@{/login}" method="POST" th:object="${loginForm}">
+            <!-- Email Field -->
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email"
+                       id="email"
+                       name="email"
+                       th:field="*{email}"
+                       class="form-input"
+                       placeholder="example@email.com"
+                       required>
+                <div class="error-text" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+                    Пожалуйста, введите корректный email
+                </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+                <label for="password" class="form-label">Пароль</label>
+                <div class="password-wrapper">
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           th:field="*{password}"
+                           class="form-input"
+                           placeholder="Введите ваш пароль"
+                           required>
+                    <button type="button" class="toggle-password" onclick="togglePassword()">👁️</button>
+                </div>
+                <div class="error-text" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                    Пароль обязателен
+                </div>
+            </div>
+
+            <!-- Remember Me & Forgot Password -->
+            <div class="form-options">
+                <label class="remember-me" onclick="toggleRememberMe()">
+                    <div class="checkbox" id="rememberCheckbox"></div>
+                    <span class="checkbox-text">Запомнить меня</span>
+                </label>
+                <a href="#" class="forgot-password">Забыли пароль?</a>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="login-btn" id="loginButton">
+                <span id="buttonText">Войти в аккаунт</span>
+                <div class="spinner" id="spinner"></div>
+            </button>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>или</span>
+            </div>
+
+            <!-- Social Login -->
+            <div class="social-login">
+                <button type="button" class="social-btn google">
+                    <span>Google</span>
+                </button>
+                <button type="button" class="social-btn github">
+                    <span>GitHub</span>
+                </button>
+            </div>
+        </form>
+
+        <!-- Register Section -->
+        <div class="register-section">
+            <p class="register-text">Нет аккаунта?</p>
+            <a th:href="@{/register}" class="register-btn">
+                <span>Создать аккаунт</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="login-footer">
+        <p>© 2024 ThoughtFlow. Все права защищены.</p>
+        <div class="footer-links">
+            <a href="#">Политика конфиденциальности</a>
+            <a href="#">Условия использования</a>
+            <a href="#">Помощь</a>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.querySelector('form');
+        const loginButton = document.getElementById('loginButton');
+        const buttonText = document.getElementById('buttonText');
+        const spinner = document.getElementById('spinner');
+
+        // Toggle password visibility
+        window.togglePassword = function() {
+            const passwordInput = document.getElementById('password');
+            const toggleButton = document.querySelector('.toggle-password');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleButton.textContent = '👁️‍🗨️';
+            } else {
+                passwordInput.type = 'password';
+                toggleButton.textContent = '👁️';
+            }
+        };
+
+        // Toggle remember me checkbox
+        window.toggleRememberMe = function() {
+            const checkbox = document.getElementById('rememberCheckbox');
+            checkbox.classList.toggle('checked');
+
+            // Create hidden input for remember me
+            let rememberInput = document.querySelector('input[name="remember-me"]');
+            if (!rememberInput) {
+                rememberInput = document.createElement('input');
+                rememberInput.type = 'hidden';
+                rememberInput.name = 'remember-me';
+                loginForm.appendChild(rememberInput);
+            }
+
+            rememberInput.value = checkbox.classList.contains('checked') ? 'true' : 'false';
+        };
+
+        // Form submission with loading state
+        loginForm.addEventListener('submit', function(e) {
+            // Show loading state
+            buttonText.style.display = 'none';
+            spinner.style.display = 'block';
+            loginButton.disabled = true;
+
+            // If there are validation errors, reset loading state
+            setTimeout(() => {
+                if (document.querySelector('.input-error')) {
+                    buttonText.style.display = 'block';
+                    spinner.style.display = 'none';
+                    loginButton.disabled = false;
+                }
+            }, 2000);
+        });
+
+        // Auto-focus email field
+        const emailInput = document.getElementById('email');
+        if (!emailInput.value) {
+            emailInput.focus();
+        }
+
+        // Enter key submits form
+        loginForm.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                loginForm.requestSubmit();
+            }
+        });
+
+        // Check if there's a remember me cookie
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        const rememberedEmail = getCookie('remembered_email');
+        if (rememberedEmail) {
+            emailInput.value = rememberedEmail;
+            document.getElementById('rememberCheckbox').classList.add('checked');
+        }
+
+        // Save email to cookie if remember me is checked
+        window.toggleRememberMe = function() {
+            const checkbox = document.getElementById('rememberCheckbox');
+            const isChecked = !checkbox.classList.contains('checked');
+
+            checkbox.classList.toggle('checked');
+
+            if (isChecked && emailInput.value) {
+                // Set cookie for 30 days
+                document.cookie = `remembered_email=${emailInput.value}; max-age=${30*24*60*60}; path=/`;
+            } else {
+                // Remove cookie
+                document.cookie = 'remembered_email=; max-age=0; path=/';
+            }
+        };
+
+        // Initialize checkbox if email is in cookie
+        if (rememberedEmail) {
+            document.getElementById('rememberCheckbox').classList.add('checked');
+        }
+    });
+</script>
+</body>
+</html>

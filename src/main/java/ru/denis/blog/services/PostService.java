@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.denis.blog.dtos.CommentDto;
 import ru.denis.blog.dtos.PostDto;
+import ru.denis.blog.models.Author;
 import ru.denis.blog.models.Comment;
 import ru.denis.blog.models.Post;
 import ru.denis.blog.repositories.AuthorRepository;
@@ -27,6 +28,10 @@ public class PostService {
 
     public List<Post> getAll() {
         return postRepository.findAll();
+    }
+
+    public List<Post> getAllByAuthor(Author author) {
+        return postRepository.findAllByAuthor(author);
     }
 
     public void save(PostDto postDto) {
