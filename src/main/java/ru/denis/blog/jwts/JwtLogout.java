@@ -10,8 +10,8 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 public class JwtLogout implements LogoutHandler {
 
     @Override
-    public void logout(HttpServletRequest request, HttpServletResponse response, @Nullable Authentication authentication) {
-        Cookie cookie = new Cookie("JWT", null);
+    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        Cookie cookie = new Cookie("JWT_TOKEN", null);
 
         cookie.setHttpOnly(true);
         cookie.setSecure(true);

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title th:text="'Редактировать: ' + ${post.title} + ' | Блог'">Редактировать пост | Блог</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link th:href="@{/css/header.css}" rel="stylesheet">
   <style>
     /* Все стили остаются такими же как в предыдущей версии */
     * {
@@ -638,16 +639,7 @@
   </style>
 </head>
 <body>
-<!-- Header -->
-<header class="header">
-  <div class="container header-content">
-    <a href="/" class="logo">Назад к ленте</a>
-    <div class="post-actions">
-      <a th:href="@{/posts/{id}(id=${post.id})}" class="action-btn view-btn">👁️ Просмотр</a>
-      <button type="button" class="action-btn delete-btn" onclick="showDeleteModal()">🗑️ Удалить</button>
-    </div>
-  </div>
-</header>
+<div th:replace="fragments/header :: header"></div>
 
 <!-- Main Content -->
 <main class="container">

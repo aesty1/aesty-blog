@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${post.title} + ' | Блог'">Пост | Блог</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/header.css}" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -615,15 +616,7 @@
     </style>
 </head>
 <body>
-<!-- Header -->
-<header class="header">
-    <div class="container header-content">
-        <a href="/" class="logo">Назад к ленте</a>
-        <div class="post-actions">
-            <a href="/" class="action-btn back-btn">← Все посты</a>
-        </div>
-    </div>
-</header>
+<div th:replace="fragments/header :: header"></div>
 
 <!-- Main Content -->
 <main class="container">
@@ -634,10 +627,15 @@
         <div class="post-header">
             <h1 class="post-title" th:text="${post.title}">Заголовок поста</h1>
             <div class="post-meta">
-                <div class="meta-item author"
-                     th:if="${post.author != null}"
-                     th:text="'Автор: @' + ${post.author.nickname}">
-                    Автор: @username
+                <div class="meta-item author" th:if="${post.author != null}">
+                    <span style="color: #64748b; margin-right: 0.25rem;">Автор:</span>
+                    <a th:href="@{/authors/{id}(id=${post.author.id})}"
+                       style="color: #3b82f6; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 0.25rem;"
+                       onmouseover="this.style.textDecoration='underline'"
+                       onmouseout="this.style.textDecoration='none'">
+                        <span style="color: #3b82f6;">@</span>
+                        <span th:text="${post.author.nickname}">username</span>
+                    </a>
                 </div>
                 <div class="meta-item author" th:unless="${post.author != null}">
                     Автор: Аноним
@@ -650,7 +648,7 @@
                 <div class="meta-item post-id" th:text="'ID: ' + ${post.id}">
                     ID: 123
                 </div>
-                <a th:href="@{/posts/{id}/edit(id=${post.id})}"
+                <a th:if="${post.author != null and author != null and #strings.toString(post.author.nickname) == #strings.toString(author.nickname)}" th:href="@{/posts/{id}/edit(id=${post.id})}"
                    class="edit-post-btn">
                     <span class="edit-icon">✏️</span>
                     <span class="edit-text">Изменить пост</span>

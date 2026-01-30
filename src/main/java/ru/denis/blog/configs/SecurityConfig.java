@@ -41,7 +41,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login")
                 )
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/login", "/register", "/authenticate/**").permitAll()
+                        .requestMatchers("/login", "/register", "/authenticate/**", "/", "/posts/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

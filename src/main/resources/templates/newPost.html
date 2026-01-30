@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Создать новый пост | Блог</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link th:href="@{/css/header.css}" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -452,12 +453,7 @@
   </style>
 </head>
 <body>
-<!-- Header -->
-<header class="header">
-  <div class="container header-content">
-    <a href="/" class="logo">Назад к ленте</a>
-  </div>
-</header>
+<div th:replace="fragments/header :: header"></div>
 
 <!-- Main Content -->
 <main class="container">
@@ -530,25 +526,25 @@
           </div>
         </div>
 
-        <!-- Author Field (Optional) -->
-        <div class="form-group">
-          <label for="author" class="form-label">Автор</label>
-          <select id="author"
-                  name="authorId"
-                  th:field="*{authorId}"
-                  class="form-input author-select">
-            <option value="">Анонимный автор</option>
-            <!-- Authors will be populated from server -->
-            <option th:each="author : ${authors}"
-                    th:value="${author.id}"
-                    th:text="${author.nickname}">
-              Автор
-            </option>
-          </select>
-          <div class="form-hint">
-            Если не выбрать автора, пост будет опубликован анонимно
-          </div>
-        </div>
+<!--        &lt;!&ndash; Author Field (Optional) &ndash;&gt;-->
+<!--        <div class="form-group">-->
+<!--          <label for="author" class="form-label">Автор</label>-->
+<!--          <select id="author"-->
+<!--                  name="authorId"-->
+<!--                  th:field="*{authorId}"-->
+<!--                  class="form-input author-select">-->
+<!--            <option value="">Анонимный автор</option>-->
+<!--            &lt;!&ndash; Authors will be populated from server &ndash;&gt;-->
+<!--            <option th:each="author : ${authors}"-->
+<!--                    th:value="${author.id}"-->
+<!--                    th:text="${author.nickname}">-->
+<!--              Автор-->
+<!--            </option>-->
+<!--          </select>-->
+<!--          <div class="form-hint">-->
+<!--            Если не выбрать автора, пост будет опубликован анонимно-->
+<!--          </div>-->
+<!--        </div>-->
 
         <!-- Preview Toggle -->
         <div class="preview-toggle" id="preview-toggle">
