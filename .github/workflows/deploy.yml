@@ -32,22 +32,28 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           file: ./Dockerfile
-          context: ./author-service
+          context: .
           push: true
+          build-args: |
+            JAR_FILE=author-service/target/*.jar
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/author-service:latest
 
       - name: Build and Push Post Service
         uses: docker/build-push-action@v5
         with:
           file: ./Dockerfile
-          context: ./post-service
+          context: .
           push: true
+          build-args: |
+            JAR_FILE=post-service/target/*.jar
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/post-service:latest
 
       - name: Build and Push Comment Service
         uses: docker/build-push-action@v5
         with:
           file: ./Dockerfile
-          context: ./comment-service
+          context: .
           push: true
+          build-args: |
+            JAR_FILE=comment-service/target/*.jar
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/comment-service:latest
