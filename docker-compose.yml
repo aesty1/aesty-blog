@@ -1,0 +1,139 @@
+version: '3.8'
+
+volumes:
+  authors_data:
+  posts_data:
+  comments_data:
+
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  db-authors:
+    image: postgres:15-alpine
+    container_name: db_authors
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: authors_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - authors_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d authors_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  db-posts:
+    image: postgres:15-alpine
+    container_name: db_posts
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: posts_db
+    ports:
+      - "5433:5432" # Внешний порт 5433
+    volumes:
+      - posts_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d posts_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  db-comments:
+    image: postgres:15-alpine
+    container_name: db_comments
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: comments_db
+    ports:
+      - "5434:5432" # Внешний порт 5434
+    volumes:
+      - comments_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d comments_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  author-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: author-service/target/*.jar
+    container_name: author_app
+    depends_on:
+      db-authors:
+        condition: service_healthy
+    ports:
+      - "8081:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db-authors:5432/authors_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - JWT_SECRET=A71E47478999780BE24B9E99EB94DF3FFC734BE72F9C4844067D31F339BF74D4
+      - JWT_EXPIRATION=604800
+  post-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: post-service/target/*.jar
+    container_name: post_app
+    depends_on:
+      db-posts:
+        condition: service_healthy
+    ports:
+      - "8082:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db-posts:5432/posts_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - JWT_SECRET=A71E47478999780BE24B9E99EB94DF3FFC734BE72F9C4844067D31F339BF74D4
+      - JWT_EXPIRATION=604800
+  comment-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: comment-service/target/*.jar
+    container_name: comment_app
+    depends_on:
+      db-comments:
+        condition: service_healthy
+    ports:
+      - "8083:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db-comments:5432/comments_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - JWT_SECRET=A71E47478999780BE24B9E99EB94DF3FFC734BE72F9C4844067D31F339BF74D4
+      - JWT_EXPIRATION=604800

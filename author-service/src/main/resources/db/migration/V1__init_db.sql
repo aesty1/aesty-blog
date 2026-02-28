@@ -1,0 +1,7 @@
+CREATE TABLE authors (
+    id BIGINT PRIMARY KEY,
+    nickname VARCHAR NOT NULL,
+    email VARCHAR NOT NULL,
+    password VARCHAR NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
