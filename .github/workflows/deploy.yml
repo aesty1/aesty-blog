@@ -1,0 +1,50 @@
+name: CI/CD to Docker Hub
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Author Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./author-service
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/author-service:latest
+
+      - name: Build and Push Post Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./post-service
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/post-service:latest
+
+      - name: Build and Push Comment Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./comment-service
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/comment-service:latest

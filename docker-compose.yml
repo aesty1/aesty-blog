@@ -75,6 +75,7 @@ services:
       retries: 5
 
   author-service:
+    image: aesty1/author-service:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -96,6 +97,7 @@ services:
       - JWT_SECRET=A71E47478999780BE24B9E99EB94DF3FFC734BE72F9C4844067D31F339BF74D4
       - JWT_EXPIRATION=604800
   post-service:
+    image: aesty1/post-service:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -117,6 +119,7 @@ services:
       - JWT_SECRET=A71E47478999780BE24B9E99EB94DF3FFC734BE72F9C4844067D31F339BF74D4
       - JWT_EXPIRATION=604800
   comment-service:
+    image: aesty1/comments-service:latest
     build:
       context: .
       dockerfile: Dockerfile
