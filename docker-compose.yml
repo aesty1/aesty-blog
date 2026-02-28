@@ -119,7 +119,7 @@ services:
       - JWT_SECRET=A71E47478999780BE24B9E99EB94DF3FFC734BE72F9C4844067D31F339BF74D4
       - JWT_EXPIRATION=604800
   comment-service:
-    image: aesty1/comments-service:latest
+    image: aesty1/comment-service:latest
     build:
       context: .
       dockerfile: Dockerfile
