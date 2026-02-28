@@ -31,6 +31,7 @@ jobs:
       - name: Build and Push Author Service
         uses: docker/build-push-action@v5
         with:
+          file: ./Dockerfile
           context: ./author-service
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/author-service:latest
@@ -38,6 +39,7 @@ jobs:
       - name: Build and Push Post Service
         uses: docker/build-push-action@v5
         with:
+          file: ./Dockerfile
           context: ./post-service
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/post-service:latest
@@ -45,6 +47,7 @@ jobs:
       - name: Build and Push Comment Service
         uses: docker/build-push-action@v5
         with:
+          file: ./Dockerfile
           context: ./comment-service
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/comment-service:latest
